@@ -1,0 +1,115 @@
+﻿@using System.Xml;
+
+@{
+    ViewBag.Title = "Home Page";
+    XmlNodeList titleList = ViewBag.titleList;
+    XmlNode itemlist = ViewBag.itemlist;
+    XmlNamespaceManager manager = ViewBag.manager;
+    int i = 0;
+    string url = "";
+    string imgUrl = "https://www.cwb.gov.tw/V8/assets/img/weather_icons/weathers/svg_icon/day/";
+}
+
+<div class="row">
+    <div class="col-4">
+        <h2>台灣近海海岸列表</h2>
+        @foreach (XmlNode item in titleList)
+        {
+            url = "/Home/Index/" + i;
+            <div><a href=@url>@item.InnerText</a></div>
+            i++;
+        }
+    </div>
+    <div class="col-8">
+        @if (itemlist != null)
+        {
+            <h4>@itemlist.ChildNodes[0].InnerText</h4>
+            <table class="row">
+                <tbody class="col-12">
+                    @*日期*@
+                    <tr class="row">
+                        <th class="col-3">日期</th>
+                        <td class="col-3">
+                            @Convert.ToDateTime(itemlist.SelectSingleNode("./cwb:weatherElement/cwb:time[1]/cwb:startTime", manager).InnerText).ToString("MM/dd")
+                        </td>
+                        <td class="col-3">
+                            @Convert.ToDateTime(itemlist.SelectSingleNode("./cwb:weatherElement/cwb:time[2]/cwb:startTime", manager).InnerText).ToString("MM/dd")
+                        </td>
+                        <td class="col-3">
+                            @Convert.ToDateTime(itemlist.SelectSingleNode("./cwb:weatherElement/cwb:time[3]/cwb:startTime", manager).InnerText).ToString("MM/dd")
+                        </td>
+                    </tr>
+                    @*天氣*@
+                    <tr class="row">
+                        <th class="col-3">天氣</th>
+                        <td class="col-3">
+                            <img src=@(imgUrl + String.Format("{0:00}",Convert.ToInt32( itemlist.SelectSingleNode("./cwb:weatherElement[1]/cwb:time[1]//cwb:parameterValue", manager).InnerText))+".svg")
+                                 alt=@itemlist.SelectSingleNode("./cwb:weatherElement[1]/cwb:time[1]//cwb:parameter", manager).InnerText />
+                        </td>
+                        <td class="col-3">
+                            <img src=@(imgUrl +  String.Format("{0:00}",Convert.ToInt32(itemlist.SelectSingleNode("./cwb:weatherElement[1]/cwb:time[2]//cwb:parameterValue", manager).InnerText))+".svg")
+                                 alt=@itemlist.SelectSingleNode("./cwb:weatherElement[1]/cwb:time[2]//cwb:parameter", manager).InnerText />
+                        </td>
+                        <td class="col-3">
+                            <img src=@(imgUrl + String.Format("{0:00}", Convert.ToInt32(itemlist.SelectSingleNode("./cwb:weatherElement[1]/cwb:time[3]//cwb:parameterValue", manager).InnerText))+".svg")
+                                 alt=@itemlist.SelectSingleNode("./cwb:weatherElement[1]/cwb:time[3]//cwb:parameter", manager).InnerText />
+                        </td>
+                    </tr>
+                    @*風向*@
+                    <tr class="row">
+                        <th class="col-3">風向</th>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[2]/cwb:time[1]//cwb:parameterName", manager).InnerText
+                        </td>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[2]/cwb:time[2]//cwb:parameterName", manager).InnerText
+                        </td>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[2]/cwb:time[3]//cwb:parameterName", manager).InnerText
+                        </td>
+                    </tr>
+                    @*海浪*@
+                    <tr class="row">
+                        <th class="col-3">海浪</th>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[5]/cwb:time[1]//cwb:parameterName", manager).InnerText
+                        </td>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[5]/cwb:time[2]//cwb:parameterName", manager).InnerText
+                        </td>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[5]/cwb:time[3]//cwb:parameterName", manager).InnerText
+                        </td>
+                    </tr>
+                    @*浪高*@
+                    <tr class="row">
+                        <th class="col-3">浪高</th>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[4]/cwb:time[1]//cwb:parameterName", manager).InnerText
+                        </td>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[4]/cwb:time[2]//cwb:parameterName", manager).InnerText
+                        </td>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[4]/cwb:time[3]//cwb:parameterName", manager).InnerText
+                        </td>
+                    </tr>
+                    @*風力(級)*@
+                    <tr class="row">
+                        <th class="col-3">風力(級)</th>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[3]/cwb:time[1]//cwb:parameterName", manager).InnerText
+                        </td>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[3]/cwb:time[2]//cwb:parameterName", manager).InnerText
+                        </td>
+                        <td class="col-3">
+                            @itemlist.SelectSingleNode("./cwb:weatherElement[3]/cwb:time[3]//cwb:parameterName", manager).InnerText
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>
